@@ -22,9 +22,9 @@ if [ -d "${scratchmnt}" ]; then
 fi
 
 # configure container label and entrypoint
-buildah config --label name=el8-mini ${newcontainer}
+buildah config --label name=el8-micro ${newcontainer}
 buildah config --cmd /bin/bash ${newcontainer}
 
 # commit the image
 buildah unmount ${newcontainer}
-buildah commit ${newcontainer} el8-mini
+buildah commit ${newcontainer} el8-micro
