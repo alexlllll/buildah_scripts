@@ -6,8 +6,11 @@ set -ex
 newcontainer=$(buildah from scratch)
 scratchmnt=$(buildah mount ${newcontainer})
 
+# config
+buildah config --author "https://github.com/alexlllll" "$newcontainer"
+
 # install the packages
-dnf install --installroot ${scratchmnt} bash coreutils glibc-minimal-langpack microdnf centos-release unzip \
+buildah unshare dnf install --installroot ${scratchmnt} bash coreutils glibc-langpack-en microdnf centos-release unzip \
 	--disablerepo="*" \
 	--enablerepo=BaseOS \
 	--releasever 8 \
@@ -23,9 +26,9 @@ buildah run "${newcontainer}" -- curl -L https://github.com/elixir-lang/elixir/r
 buildah run "${newcontainer}" -- unzip /tmp/Precompiled.zip -d /opt/elixir
 
 # set env
-buildah config --env PATH=$PATH:/opt/bin/elixir "${newcontainer}"
-buildah config --env LANG="en_US.UTF-8" "${newcontainer}"
-buildah config --env LC_CTYPE="en_US.UTF-8" "${newcontainer}"
+buildah config --env PATH=$PATH:/opt/elixir/bin "${newcontainer}"
+buildah config --env LANG=en_US.utf8 "${newcontainer}"
+buildah config --env LC_ALL=en_US.utf8 "${newcontainer}"
 
 # install phoenix
 buildah run "${newcontainer}" -- mix local.hex --force
