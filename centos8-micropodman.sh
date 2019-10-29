@@ -3,7 +3,10 @@
 set -ex
 
 # start new container from scratch
-newcontainer=$(buildah from scratch)
+#newcontainer=$(buildah from scratch)
+newcontainer="$(buildah from fuse-overlayfs)"
+buildah run "$newcontainer" cat /usr/bin/fuse-overlayfs | sudo tee /usr/bin/fuse-overlayfs > /dev/null
+
 scratchmnt=$(buildah mount ${newcontainer})
 
 # install the packages
@@ -25,6 +28,9 @@ dnf install --installroot ${scratchmnt} podman \
         --setopt=install_weak_deps=false \
         -y \
         /
+
+# podman fetch containers
+buildah run "${newcontainer}" -- podman pull hello-world
 
 # Clean up yum cache
 if [ -d "${scratchmnt}" ]; then

@@ -1,0 +1,1 @@
+alias podreset="podman rmi -f $(podman images -a -q); buildah rm -a"
