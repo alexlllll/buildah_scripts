@@ -1,1 +1,2 @@
-alias podreset="podman rmi -f $(podman images -a -q); buildah rm -a"
+function podreset { podman rmi -f $(podman images -a -q); buildah rm -a; }
+export -f podreset
